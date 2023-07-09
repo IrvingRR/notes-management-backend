@@ -12,14 +12,22 @@ import json
 
 # Create your views here.
 
+# This is the view which allows us to handle every endpoint to management the information
+# We have fourth enpoints
+# get: Allows us to get all notes from database or only one note by id depending of the id value
+# post: Allows us to create a new note and save it into database if the title is not already exists
+# put: Allows us to update by id the information of a specific note if it exists
+# delete: Allows us to delete a note by id if it exists 
+
 class NoteView(View):
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    # Endpoint to get all notes or only one by id
     def get(self, request, id = 0):
-
+        # If id is grater than 0 we have to get only the note with that id
         if(id > 0):
             notes = list(Note.objects.filter(id = id).values())
 
@@ -30,7 +38,7 @@ class NoteView(View):
                 response = {'ok': False, 'note': {}, 'message': 'Note not found'}
             
             return JsonResponse(response)
-
+        # If id is not exists or is less than 0 we have to get all notes from database
         else:
             notes = list(Note.objects.values())
 
@@ -41,6 +49,7 @@ class NoteView(View):
             
             return JsonResponse(response)
 
+    # Endpoint to create a new note if the title is already not exists in the database
     def post(self, request):
 
         try:
@@ -60,6 +69,7 @@ class NoteView(View):
             print(e)
             return JsonResponse({'ok': False, 'message': 'Oops!, the following errors occurred', 'errors': str(e)})
     
+    # Endpoint to update a specific note by id if it exists
     def put(self, request, id):
 
         try:
@@ -90,6 +100,7 @@ class NoteView(View):
             print(e)
             return JsonResponse({'ok': False, 'message': 'Oops!, the following errors occurred', 'errors': str(e)})
         
+    # Endpoint to delete a specific note by id if it exists
     def delete(self, request, id):
 
         notes = list(Note.objects.filter(id = id).values())

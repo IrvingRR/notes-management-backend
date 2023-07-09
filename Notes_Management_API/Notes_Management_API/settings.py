@@ -74,6 +74,9 @@ WSGI_APPLICATION = 'Notes_Management_API.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# We use a MySQL database to store the information about the notes
+# Database name: notes_management_django
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
