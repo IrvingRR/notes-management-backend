@@ -60,14 +60,16 @@ class NoteView(View):
             note.description = data['description']
 
             note.full_clean()
-            note.save()
+
+            newNote = Note.objects.create(title=data['title'], description=data['description'])
+            data['id'] = newNote.id
 
             response = {'ok': True, 'note': data, 'message': 'Note created successfully'}
             return JsonResponse(response)
         
         except ValidationError as e:
             print(e)
-            return JsonResponse({'ok': False, 'message': 'Oops!, the following errors occurred', 'errors': str(e)})
+            return JsonResponse({'ok': False, 'message': 'Oops!, already exists a note with that title', 'errors': str(e)})
     
     # Endpoint to update a specific note by id if it exists
     def put(self, request, id):
@@ -98,7 +100,7 @@ class NoteView(View):
 
         except ValidationError as e:
             print(e)
-            return JsonResponse({'ok': False, 'message': 'Oops!, the following errors occurred', 'errors': str(e)})
+            return JsonResponse({'ok': False, 'message': 'Oops!, already exists a note with that title', 'errors': str(e)})
         
     # Endpoint to delete a specific note by id if it exists
     def delete(self, request, id):
